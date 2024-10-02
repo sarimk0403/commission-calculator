@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commission Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Commission Calculator</h1>
+    
+    <!-- Form to add people -->
+    <form id="personForm">
+        <input type="text" id="name" placeholder="Name" required>
+        
+        <!-- Dropdown for exercise type -->
+        <select id="exerciseType" required>
+            <option value="">Select Exercise Type</option>
+            <option value="PT">PT</option>
+            <option value="Target">Target</option>
+            <option value="Basic">Basic</option>
+        </select>
+
+        <!-- The price field is removed -->
+        <input type="number" id="uniqueID" placeholder="Unique ID" required>
+        <button type="submit">Add Person</button>
+    </form>
+
+    <!-- Table to display records -->
+    <table id="personTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Exercise Type</th>
+                <th>Price</th>
+                <th>Unique ID</th>
+                <th>Commission</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- Display the total commission -->
+    <div id="totalCommissionBox">
+        <h3>Total Commission: <span id="totalCommission">0</span></h3>
+    </div>
+
+    <!-- Submit invoice button -->
+    <button id="submitInvoice">Submit Invoice</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

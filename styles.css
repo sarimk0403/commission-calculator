@@ -1,0 +1,98 @@
+/* General styles for all devices */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    color: #4CAF50;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap */
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+input, select {
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%; /* Make inputs take full width on mobile */
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+table, th, td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#totalCommissionBox {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#submitInvoice {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #2196F3;
+    color: white;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+#submitInvoice:hover {
+    background-color: #1976D2;
+}
+
+/* Mobile-specific styles */
+@media only screen and (max-width: 600px) {
+    form {
+        flex-direction: column; /* Stack form inputs vertically on mobile */
+        align-items: stretch;  /* Stretch to full width */
+    }
+
+    input, select, button {
+        width: 100%; /* Make all form elements take full width */
+        font-size: 14px; /* Reduce font size for smaller screens */
+    }
+
+    table, th, td {
+        font-size: 12px; /* Make table content smaller */
+    }
+
+    th, td {
+        padding: 5px; /* Reduce padding to fit better on small screens */
+    }
+}

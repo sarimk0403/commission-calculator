@@ -56,6 +56,84 @@ th {
     color: white;
 }
 
+#price-settings-container {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+}
+
+#price-settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#togglePriceSettings {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    outline: none;
+}
+
+#price-settings {
+    display: none; /* Initially hidden */
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+    background-color: #f9f9f9;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.price-row label {
+    flex: 1;
+    font-weight: bold;
+}
+
+.price-row input {
+    flex: 1;
+    margin: 5px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.button-group button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    min-width: 150px;
+    text-align: center;
+}
+
+.button-group button:hover {
+    background-color: #45a049;
+}
+
+
 #totalCommissionBox {
     text-align: center;
     margin-top: 20px;

@@ -1,6 +1,75 @@
 let totalCommission = 0;
 let editingRowIndex = null;
 
+// Default prices (can be modified by the user)
+let prices = {
+    Basic: 15000,
+    Target: 18000,
+    PT: 25000
+};
+
+let deductions = {
+    Basic: 8000,
+    Target: 9000,
+    PT: 10000
+};
+
+// Function to save settings to localStorage
+function savePrices() {
+    localStorage.setItem('exercisePrices', JSON.stringify(prices));
+    localStorage.setItem('exerciseDeductions', JSON.stringify(deductions));
+}
+
+// Function to load prices from localStorage
+function loadPrices() {
+    const savedPrices = localStorage.getItem('exercisePrices');
+    const savedDeductions = localStorage.getItem('exerciseDeductions');
+
+    if (savedPrices) {
+        prices = JSON.parse(savedPrices);
+        document.getElementById('basicPrice').value = prices.Basic;
+        document.getElementById('targetPrice').value = prices.Target;
+        document.getElementById('ptPrice').value = prices.PT;
+    }
+
+    if (savedDeductions) {
+        deductions = JSON.parse(savedDeductions);
+        document.getElementById('basicDeduction').value = deductions.Basic;
+        document.getElementById('targetDeduction').value = deductions.Target;
+        document.getElementById('ptDeduction').value = deductions.PT;
+    }
+}
+
+// Load prices when the page loads
+window.onload = loadPrices;
+
+// Event listener for saving prices
+document.getElementById('savePrices').addEventListener('click', function() {
+    prices.Basic = parseFloat(document.getElementById('basicPrice').value) || prices.Basic;
+    prices.Target = parseFloat(document.getElementById('targetPrice').value) || prices.Target;
+    prices.PT = parseFloat(document.getElementById('ptPrice').value) || prices.PT;
+
+    deductions.Basic = parseFloat(document.getElementById('basicDeduction').value) || deductions.Basic;
+    deductions.Target = parseFloat(document.getElementById('targetDeduction').value) || deductions.Target;
+    deductions.PT = parseFloat(document.getElementById('ptDeduction').value) || deductions.PT;
+
+    savePrices();
+    alert('Prices and Deductions saved successfully!');
+});
+
+// Event listener for editing prices
+document.getElementById('editPrices').addEventListener('click', function() {
+    document.getElementById('basicPrice').value = prices.Basic;
+    document.getElementById('targetPrice').value = prices.Target;
+    document.getElementById('ptPrice').value = prices.PT;
+
+    document.getElementById('basicDeduction').value = deductions.Basic;
+    document.getElementById('targetDeduction').value = deductions.Target;
+    document.getElementById('ptDeduction').value = deductions.PT;
+
+    alert('You can now edit the prices and deductions.');
+});
+
 // Event listener for form submission
 document.getElementById('personForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -10,17 +79,10 @@ document.getElementById('personForm').addEventListener('submit', function(event)
     const exerciseType = document.getElementById('exerciseType').value;
     const uniqueID = document.getElementById('uniqueID').value;
 
-    // Set price based on exercise type
-    let price = 0;
-    if (exerciseType === 'PT') {
-        price = 25000;
-    } else if (exerciseType === 'Target') {
-        price = 15000;
-    } else if (exerciseType === 'Basic') {
-        price = 12000;
-    }
-
-    const adjustedPrice = price - 8000;
+    // Get price based on exercise type
+    const price = prices[exerciseType] || 0;
+    const deduction = deductions[exerciseType] || 0;
+    const adjustedPrice = price - deduction;
     const commission = adjustedPrice * 0.50;
 
     if (editingRowIndex !== null) {
@@ -50,7 +112,7 @@ function addRowToTable(name, exerciseType, price, uniqueID, commission) {
 
     nameCell.innerHTML = name;
     exerciseTypeCell.innerHTML = exerciseType;
-    priceCell.innerHTML = price;
+    priceCell.innerHTML = price.toFixed(2);
     uniqueIDCell.innerHTML = uniqueID;
     commissionCell.innerHTML = commission.toFixed(2);
 
@@ -64,78 +126,103 @@ function addRowToTable(name, exerciseType, price, uniqueID, commission) {
     updateTotalCommission(commission);
 }
 
+function updateTotalCommission(commission) {
+    totalCommission += commission;
+    document.getElementById('totalCommission').textContent = totalCommission.toFixed(2);
+}
+
 // Function to edit an existing row
 function editRow(button) {
     const row = button.parentNode.parentNode;
-    editingRowIndex = row.rowIndex - 1;  // Get row index
+    editingRowIndex = row.rowIndex - 1; // Adjust for header row
 
     // Populate form with current row values
     document.getElementById('name').value = row.cells[0].textContent;
     document.getElementById('exerciseType').value = row.cells[1].textContent;
     document.getElementById('uniqueID').value = row.cells[3].textContent;
 
-    // Remove commission from the total (because it's being edited)
+    // Optionally, remove the commission of the row being edited from the total
     updateTotalCommission(-parseFloat(row.cells[4].textContent));
 }
 
-// Function to update an existing row with new values
-function updateRow(index, name, exerciseType, price, uniqueID, commission) {
-    const table = document.getElementById('personTable').getElementsByTagName('tbody')[0];
-    const row = table.rows[index];
-
-    row.cells[0].textContent = name;
-    row.cells[1].textContent = exerciseType;
-    row.cells[2].textContent = price;
-    row.cells[3].textContent = uniqueID;
-    row.cells[4].textContent = commission.toFixed(2);
-
-    // Recalculate the total commission after editing
-    updateTotalCommission(commission);
-}
-
-// Function to delete a row from the table
+// Function to delete a row
 function deleteRow(button, commission) {
     const row = button.parentNode.parentNode;
     row.parentNode.removeChild(row);
-
-    // Remove the row's commission from the total
     updateTotalCommission(-commission);
 }
 
-// Function to update the total commission
-function updateTotalCommission(commission) {
-    totalCommission += commission;
-    document.getElementById('totalCommission').textContent = totalCommission.toFixed(2);
-}
+// Toggle the visibility of the price settings section
+document.getElementById('togglePriceSettings').addEventListener('click', function () {
+    const settingsDiv = document.getElementById('price-settings');
+    const toggleBtn = document.getElementById('togglePriceSettings');
 
-// Event listener for invoice submission
-document.getElementById('submitInvoice').addEventListener('click', function() {
-    generateInvoice();
+    if (settingsDiv.style.display === "none" || settingsDiv.style.display === "") {
+        settingsDiv.style.display = "block";
+        toggleBtn.textContent = "▲"; // Change arrow to up
+    } else {
+        settingsDiv.style.display = "none";
+        toggleBtn.textContent = "▼"; // Change arrow to down
+    }
 });
 
-// Function to generate and download the invoice
-function generateInvoice() {
-    const table = document.getElementById('personTable').getElementsByTagName('tbody')[0];
-    const rows = table.rows;
-    let invoiceData = "Name, Exercise Type, Price, Unique ID, Commission\n";
+// Automatically hide settings after saving prices
+document.getElementById('savePrices').addEventListener('click', function () {
+    document.getElementById('price-settings').style.display = "none";
+    document.getElementById('togglePriceSettings').textContent = "▼";
+});
 
-    // Loop through each row and extract data
-    for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].cells;
-        const rowData = [];
-        for (let j = 0; j < cells.length - 1; j++) { // Skip the actions cell
-            rowData.push(cells[j].textContent);
+// Function to generate PDF from table without "Actions" column and with dynamic month title
+document.getElementById('submitInvoice').addEventListener('click', function () {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Get current month name
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const currentDate = new Date();
+    const currentMonth = monthNames[currentDate.getMonth()]; // Get month name
+
+    const title = `${currentMonth} Payroll`; // Dynamic title
+
+    doc.text(title, 14, 15); // Set dynamic title at the top
+
+    // Get table headers (excluding the last column)
+    const headers = [];
+    document.querySelectorAll("#personTable thead th").forEach((th, index) => {
+        if (index < 5) { // Only include the first 5 columns (skip "Actions")
+            headers.push(th.innerText);
         }
-        invoiceData += rowData.join(", ") + "\n";
-    }
+    });
 
-    // Add total commission to the invoice
-    invoiceData += "\nTotal Commission: " + totalCommission.toFixed(2);
+    // Get table rows (excluding the last column)
+    const data = [];
+    document.querySelectorAll("#personTable tbody tr").forEach(row => {
+        const rowData = [];
+        row.querySelectorAll("td").forEach((td, index) => {
+            if (index < 5) { // Only include first 5 columns
+                rowData.push(td.innerText);
+            }
+        });
+        data.push(rowData);
+    });
 
-    // Create a blob and download the invoice as a CSV file
-    const blob = new Blob([invoiceData], { type: 'text/csv' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'invoice.csv';
-    link.click();
-}
+    // Generate the PDF table
+    doc.autoTable({
+        head: [headers],  // Set headers
+        body: data,       // Set row data
+        startY: 20,       // Position to start the table
+        theme: 'grid',    // Adds a border grid
+        headStyles: { fillColor: [76, 175, 80] }, // Green header color
+    });
+
+    // Save the generated PDF
+    doc.save(`${currentMonth}_Payroll.pdf`);
+});
+
+
+
+
+ 
